@@ -1,26 +1,37 @@
 pipeline {
     agent any
-
     environment{
         NPM_CONFIG_CACHE= "${WORKSPACE}/.npm"
     }
-
-    stages {
-        stage('Saludo a usuario') {
+    stages{
+        stage ("saludo a usuario") {
             steps {
-                sh 'echo "Saludando desde pipeline"'
+                sh 'echo "comenzado mi pipeline"'
             }
         }
-
-        stage('Proceso de build y test') {
+        stage ("salida de los saludos a usuario") {
+            steps {
+                sh 'echo "saliendo de este grupo de escenarios"'
+            }
+        }
+        stage ("proceso de build y test") {
             agent {
                 docker {
                     image 'node:22'
+                    reuseNode true
                 }
             }
-            steps {
-                sh 'echo "Usando contenedor node:22 para ejecutar comandos"'
-                sh 'npm ci'
+            stages {
+                stage("instalacion de dependencias"){
+                    steps {
+                        sh 'npm ci'
+                    }
+                }
+                stage("ejecucion de pruebas"){
+                    steps {
+                        sh 'npm run test:cov'
+                    }
+                }
             }
         }
     }
