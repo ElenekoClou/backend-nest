@@ -39,10 +39,12 @@ pipeline {
         }
         stage ("build y push de imagen docker"){
             steps{
-                sh.withRegistry("${registry}", registryCredentials){
-                    sh "docker build -t backend-nest-csp ."
-                    sh "docker tag backend-nest-csp ${dockerImagePrefix}/backend-nest-csp"
-                    sh "docker push ${dockerImagePrefix}/backend-nest-csp"
+                script {
+                    docker.withRegistry("${registry}", registryCredentials){
+                        sh "docker build -t backend-nest-csp ."
+                        sh "docker tag backend-nest-csp ${dockerImagePrefix}/backend-nest-csp"
+                        sh "docker push ${dockerImagePrefix}/backend-nest-csp"
+                    }
                 }
             }
         }
